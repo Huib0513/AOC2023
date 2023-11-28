@@ -1,1 +1,3 @@
-Bla di bla
+#!python3
+
+print('Hello world!')
