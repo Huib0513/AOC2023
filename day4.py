@@ -41,10 +41,17 @@ def solve1():
     for x in numberofwinners:
         if (len(numberofwinners[x]) > 0):
             result1 += 2**(len(numberofwinners[x])-1)
+            for i in range(1,len(numberofwinners[x])+1):
+                numberoftickets[x+i] += numberoftickets[x]
 
     print("Deel 1: " + str(result1))
 
     result2 = 0
+    for t in numberoftickets:
+        result2 += numberoftickets[t]
+
+    print(numberoftickets)
+    print("Deel 2: "+ str(result2))
 
 
 def solve2():
