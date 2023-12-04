@@ -25,22 +25,27 @@ input = open('input_'+os.path.basename(__file__).split(".")[0]+'.txt').read().sp
 
 def solve1():
     mynums = {}
-    winnums = {}
-    t = {}
+#    winnums = {}
+    numberofwinners = {}
+    numberoftickets = {}
     for x,l in enumerate([l.split('|')[0].split(':')[1].split() for l in input]):
         mynums[x] = set([int(n) for n in l])
+        numberoftickets[x] = 1
     for x,l in enumerate([l.split('|')[1].split() for l in input]):
-        t[x] = mynums[x].intersection(set([int(n) for n in l]))
+        numberofwinners[x] = mynums[x].intersection(set([int(n) for n in l]))
 #        winnums[x] = set([int(n) for n in l])
 #    for x in mynums.keys():
 #        t[x] = mynums[x].intersection(winnums[x])
 
-    result =0 
-    for x in t:
-        if (len(t[x]) > 0):
-            result += 2**(len(t[x])-1)
+    result1=0 
+    for x in numberofwinners:
+        if (len(numberofwinners[x]) > 0):
+            result1 += 2**(len(numberofwinners[x])-1)
 
-    print("Deel 1: " + str(result))
+    print("Deel 1: " + str(result1))
+
+    result2 = 0
+
 
 def solve2():
     print("Deel 2: No")
