@@ -30,12 +30,10 @@ def solve1():
     for x,l in enumerate([l.split('|')[0].split(':')[1].split() for l in input]):
         mynums[x] = set([int(n) for n in l])
     for x,l in enumerate([l.split('|')[1].split() for l in input]):
-        winnums[x] = set([int(n) for n in l])
-    for x in mynums.keys():
-        t[x] = mynums[x].intersection(winnums[x])
-    
-    print(mynums, winnums)
-    print(t)
+        t[x] = mynums[x].intersection(set([int(n) for n in l]))
+#        winnums[x] = set([int(n) for n in l])
+#    for x in mynums.keys():
+#        t[x] = mynums[x].intersection(winnums[x])
 
     result =0 
     for x in t:
