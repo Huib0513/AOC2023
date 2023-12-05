@@ -47,28 +47,69 @@ input = [
 #input = [int(i) for i in open('input_'+os.path.basename(__file__).split(".")[0]+'.txt').read().splitlines()]
 
 # input complete lines
-input = open('input_'+os.path.basename(__file__).split(".")[0]+'.txt').read().splitlines()
+#input = open('input_'+os.path.basename(__file__).split(".")[0]+'.txt').read().splitlines()
 
-# Parse input
 maporder = ["seed-to-soil","soil-to-fertilizer","fertilizer-to-water","water-to-light","light-to-temperature","temperature-to-humidity","humidity-to-location"]
 
+def get_maps_old(input, maps):
+    for line in input[2:]:
+        if len(line) == 0: continue
+        if line.find('map') > 0:
+            currentmap = line.split()[0]
+            print('Processing map ' + currentmap)
+            maps[currentmap] = {}
+            continue
+        dest, source, length = [int(x) for x in line.split()]
+        maps[currentmap].update(dict(zip(range(source, source+length), range(dest, dest+length))))
+
+def get_maps(input, maps):
+    for line in input[2:]:
+        if len(line) == 0: continue
+        if line.find('map') > 0:
+            currentmap = line.split()[0]
+            print('Processing map ' + currentmap)
+            maps[currentmap] = {}
+            rangecount = 0
+            continue
+        dest, source, length = [int(x) for x in line.split()]
+        maps[currentmap].update({rangecount:(source, source+length-1, dest)})
+        rangecount += 1
+
+
 seeds = [int(x) for x in input[0].split(': ')[1].split()]
-
 maps = {}
-for line in input[2:]:
-    if len(line) == 0: continue
-    if line.find('map') > 0:
-        currentmap = line.split()[0]
-        print('Processing map ' + currentmap)
-        maps[currentmap] = {}
-        continue
-    dest, source, length = [int(x) for x in line.split()]
-    maps[currentmap].update(dict(zip(range(source, source+length), range(dest, dest+length))))
-    
-
+get_maps(input, maps)
 
 
 def solve1():
+    solutions = {int(x):int(x) for x in input[0].split(': ')[1].split()}
+    for i in range(len(maporder)):
+        #print(solutions)
+        for s in solutions:
+            for r in (maps[maporder[i]].values()):
+                if ((solutions[s] >= r[0]) and (solutions[s] <= r[1])):
+                    solutions[s] = r[2] + (solutions[s] - r[0])
+                    break
+    print("Deel 1: " + str(min(solutions.values())))
+
+    # Lazy option: copy code for part 2
+    solutions = {}
+    seeds = [int(x) for x in input[0].split(': ')[1].split()]
+    for x in range(0, len(seeds),2):
+        for t in range(seeds[x+1]):
+            solutions[seeds[x]+t]=seeds[x]+t
+    for i in range(len(maporder)):
+        #print(solutions)
+        for s in solutions:
+            for r in (maps[maporder[i]].values()):
+                if ((solutions[s] >= r[0]) and (solutions[s] <= r[1])):
+                    solutions[s] = r[2] + (solutions[s] - r[0])
+                    break
+    print("Deel 2: " + str(min(solutions.values())))
+
+
+
+def old_solve1():
     print(maps)
     location = {int(x):int(x) for x in input[0].split(': ')[1].split()}
     print(location)
