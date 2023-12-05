@@ -50,6 +50,7 @@ def solve1():
     for t in numberoftickets:
         result2 += numberoftickets[t]
 
+    #print(numberoftickets)
     print("Deel 2: "+ str(result2))
 
 
