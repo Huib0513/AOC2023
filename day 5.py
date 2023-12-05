@@ -47,14 +47,42 @@ input = [
 #input = [int(i) for i in open('input_'+os.path.basename(__file__).split(".")[0]+'.txt').read().splitlines()]
 
 # input complete lines
-#input = open('input_'+os.path.basename(__file__).split(".")[0]+'.txt').read().splitlines()
+input = open('input_'+os.path.basename(__file__).split(".")[0]+'.txt').read().splitlines()
 
 # Parse input
+maporder = ["seed-to-soil","soil-to-fertilizer","fertilizer-to-water","water-to-light","light-to-temperature","temperature-to-humidity","humidity-to-location"]
+
+seeds = [int(x) for x in input[0].split(': ')[1].split()]
+
+maps = {}
+for line in input[2:]:
+    if len(line) == 0: continue
+    if line.find('map') > 0:
+        currentmap = line.split()[0]
+        print('Processing map ' + currentmap)
+        maps[currentmap] = {}
+        continue
+    dest, source, length = [int(x) for x in line.split()]
+    maps[currentmap].update(dict(zip(range(source, source+length), range(dest, dest+length))))
+    
 
 
 
 def solve1():
-    print("Deel 1: No")
+    print(maps)
+    location = {int(x):int(x) for x in input[0].split(': ')[1].split()}
+    print(location)
+    for i in range(len(maporder)):
+        for s in location:
+            if location[s] in maps[maporder[i]]:
+                location[s] = maps[maporder[i]][location[s]]
+            else:
+                location[s] = location[s]
+        print('After ' + maporder[i] + ": ")
+        print(location)
+
+    #print((location.values()))
+    print("Deel 1: " + str(min(location.values())))
 
 def solve2():
     print("Deel 2: No")
