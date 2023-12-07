@@ -2,6 +2,7 @@
 import os
 import datetime
 from collections import Counter
+from functools import cmp_to_key
 
 # Test input
 input = ["32T3K 765",
@@ -17,10 +18,10 @@ input = ["32T3K 765",
 #input = [int(i) for i in open('input_'+os.path.basename(__file__).split(".")[0]+'.txt').read().splitlines()]
 
 # input complete lines
-#input = open('input_'+os.path.basename(__file__).split(".")[0]+'.txt').read().splitlines()
+input = open('input_'+os.path.basename(__file__).split(".")[0]+'.txt').read().splitlines()
 
-cardorder = ['A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2']
-typeorder = {'fiveofakind': 1, 'fourofakind': 2, 'fullhouse': 3, 'threeofakind': 4, 'twopair': 5, 'onepair': 6, 'highcard': 7}
+cardorder = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A']
+typeorder = {'fiveofakind': 7, 'fourofakind': 6, 'fullhouse': 5, 'threeofakind': 4, 'twopair': 3, 'onepair': 2, 'highcard': 1}
 
 def get_type(hand):
     c = Counter(hand)
@@ -42,13 +43,34 @@ def get_type(hand):
             else:
                 return 'fullhouse'
 
+def handcompare(hand1, hand2):
+    #powers = [2**cardorder.index(x) for x in hand]
+    result = 0
+    if typeorder[get_type(hand1)] < typeorder[get_type(hand2)]:
+        result = -1
+    elif typeorder[get_type(hand1)] > typeorder[get_type(hand2)]:
+        result = 1
+    else:
+        for x in range(len(hand1)):
+            if cardorder.index(hand1[x]) < cardorder.index(hand2[x]):
+                result = -1
+                break
+            elif cardorder.index(hand1[x]) > cardorder.index(hand2[x]):
+                result = 1
+                break
+    return result
 
 def solve1():
     hands = {l.split()[0]:typeorder[get_type(l.split()[0])] for l in input}
-    bets = [l.split()[1] for l in input]
-    print(hands)
+    bets = {l.split()[0]:int(l.split()[1]) for l in input}
+    #print(hands, bets)
+    handlist = list(hands)
 
-    print("Deel 1: No")
+    #print(sorted(hands, key = cmp_to_key(handcompare)))
+
+    value = sum([(x+1)*bets[y] for x,y in enumerate(sorted(hands, key = cmp_to_key(handcompare)))])
+
+    print("Deel 1: " + str(value))
 
 def solve2():
     print("Deel 2: No")
