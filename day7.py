@@ -20,7 +20,8 @@ input = ["32T3K 765",
 # input complete lines
 input = open('input_'+os.path.basename(__file__).split(".")[0]+'.txt').read().splitlines()
 
-cardorder = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A']
+cardorder_part1 = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A']
+cardorder_part2 = ['J', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'Q', 'K', 'A']
 typeorder = {'fiveofakind': 7, 'fourofakind': 6, 'fullhouse': 5, 'threeofakind': 4, 'twopair': 3, 'onepair': 2, 'highcard': 1}
 
 def get_type(hand):
@@ -43,6 +44,19 @@ def get_type(hand):
             else:
                 return 'fullhouse'
 
+def get_best_hand(hand):
+    maxhand = hand
+    index = hand.find('J')
+    if (index == -1):
+        return hand
+    for c in cardorder_part2[1:]:
+        tryhand = hand[:index] + c + hand[index+1:]
+#        print('Hand is ' + hand + ' index is ' + str(index) + ' trying ' + tryhand)
+        newhand = get_best_hand(tryhand)
+        if (handcompare(newhand, maxhand) > 0): maxhand = newhand
+    return maxhand
+            
+
 def handcompare(hand1, hand2):
     #powers = [2**cardorder.index(x) for x in hand]
     result = 0
@@ -52,20 +66,15 @@ def handcompare(hand1, hand2):
         result = 1
     else:
         for x in range(len(hand1)):
-            if cardorder.index(hand1[x]) < cardorder.index(hand2[x]):
+            if cardorder_part1.index(hand1[x]) < cardorder_part1.index(hand2[x]):
                 result = -1
                 break
-            elif cardorder.index(hand1[x]) > cardorder.index(hand2[x]):
+            elif cardorder_part1.index(hand1[x]) > cardorder_part1.index(hand2[x]):
                 result = 1
                 break
     return result
 
 def solve1():
-    hands = {l.split()[0]:typeorder[get_type(l.split()[0])] for l in input}
-    bets = {l.split()[0]:int(l.split()[1]) for l in input}
-    #print(hands, bets)
-    handlist = list(hands)
-
     #print(sorted(hands, key = cmp_to_key(handcompare)))
 
     value = sum([(x+1)*bets[y] for x,y in enumerate(sorted(hands, key = cmp_to_key(handcompare)))])
@@ -73,7 +82,14 @@ def solve1():
     print("Deel 1: " + str(value))
 
 def solve2():
-    print("Deel 2: No")
+    besthands = {get_best_hand(h):h for h in hands}
+#    print(besthands)
+    value = sum([(x+1)*bets[besthands[y]] for x,y in enumerate(sorted(besthands.keys(), key = cmp_to_key(handcompare)))])
+    print("Deel 2: " + str(value))
+
+hands = {l.split()[0]:typeorder[get_type(l.split()[0])] for l in input}
+bets = {l.split()[0]:int(l.split()[1]) for l in input}
+#print(hands, bets)
 
 start = datetime.datetime.now()
 solve1()
