@@ -83,7 +83,7 @@ def solve1():
 
 def solve2():
     besthands = {get_best_hand(h):h for h in hands}
-#    print(besthands)
+    print({b:besthands[b] for b in besthands if (besthands[b].find('J')>0)})
     value = sum([(x+1)*bets[besthands[y]] for x,y in enumerate(sorted(besthands.keys(), key = cmp_to_key(handcompare)))])
     print("Deel 2: " + str(value))
 
