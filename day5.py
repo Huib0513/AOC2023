@@ -51,16 +51,16 @@ input = [
 
 maporder = ["seed-to-soil","soil-to-fertilizer","fertilizer-to-water","water-to-light","light-to-temperature","temperature-to-humidity","humidity-to-location"]
 
-def get_maps_old(input, maps):
-    for line in input[2:]:
-        if len(line) == 0: continue
-        if line.find('map') > 0:
-            currentmap = line.split()[0]
-            print('Processing map ' + currentmap)
-            maps[currentmap] = {}
-            continue
-        dest, source, length = [int(x) for x in line.split()]
-        maps[currentmap].update(dict(zip(range(source, source+length), range(dest, dest+length))))
+# def get_maps_old(input, maps):
+#     for line in input[2:]:
+#         if len(line) == 0: continue
+#         if line.find('map') > 0:
+#             currentmap = line.split()[0]
+#             print('Processing map ' + currentmap)
+#             maps[currentmap] = {}
+#             continue
+#         dest, source, length = [int(x) for x in line.split()]
+#         maps[currentmap].update(dict(zip(range(source, source+length), range(dest, dest+length))))
 
 def get_maps(input, maps):
     for line in input[2:]:
@@ -75,11 +75,13 @@ def get_maps(input, maps):
         maps[currentmap].update({rangecount:(source, source+length-1, dest)})
         rangecount += 1
 
+def transition(source, map):
+    #         if location[s] in maps[maporder[i]]:
+    #             location[s] = maps[maporder[i]][location[s]]
+    #         else:
+    #             location[s] = location[s]
 
-seeds = [int(x) for x in input[0].split(': ')[1].split()]
-maps = {}
-get_maps(input, maps)
-
+    return source
 
 def solve1():
     solutions = {int(x):int(x) for x in input[0].split(': ')[1].split()}
@@ -93,40 +95,53 @@ def solve1():
     print("Deel 1: " + str(min(solutions.values())))
 
     # Lazy option: copy code for part 2
-    solutions = {}
-    seeds = [int(x) for x in input[0].split(': ')[1].split()]
-    for x in range(0, len(seeds),2):
-        for t in range(seeds[x+1]):
-            solutions[seeds[x]+t]=seeds[x]+t
-    for i in range(len(maporder)):
-        #print(solutions)
-        for s in solutions:
-            for r in (maps[maporder[i]].values()):
-                if ((solutions[s] >= r[0]) and (solutions[s] <= r[1])):
-                    solutions[s] = r[2] + (solutions[s] - r[0])
-                    break
-    print("Deel 2: " + str(min(solutions.values())))
+    # solutions = {}
+    # seeds = [int(x) for x in input[0].split(': ')[1].split()]
+    # for x in range(0, len(seeds),2):
+    #     for t in range(seeds[x+1]):
+    #         solutions[seeds[x]+t]=seeds[x]+t
+    # for i in range(len(maporder)):
+    #     #print(solutions)
+    #     for s in solutions:
+    #         for r in (maps[maporder[i]].values()):
+    #             if ((solutions[s] >= r[0]) and (solutions[s] <= r[1])):
+    #                 solutions[s] = r[2] + (solutions[s] - r[0])
+    #                 break
+    #print("Deel 2: " + str(min(solutions.values())))
 
+# def old_solve1():
+#     print(maps)
+#     location = {int(x):int(x) for x in input[0].split(': ')[1].split()}
+#     print(location)
+#     for i in range(len(maporder)):
+#         for s in location:
+#             if location[s] in maps[maporder[i]]:
+#                 location[s] = maps[maporder[i]][location[s]]
+#             else:
+#                 location[s] = location[s]
+#         print('After ' + maporder[i] + ": ")
+#         print(location)
 
-
-def old_solve1():
-    print(maps)
-    location = {int(x):int(x) for x in input[0].split(': ')[1].split()}
-    print(location)
-    for i in range(len(maporder)):
-        for s in location:
-            if location[s] in maps[maporder[i]]:
-                location[s] = maps[maporder[i]][location[s]]
-            else:
-                location[s] = location[s]
-        print('After ' + maporder[i] + ": ")
-        print(location)
-
-    #print((location.values()))
-    print("Deel 1: " + str(min(location.values())))
+#     #print((location.values()))
+#     print("Deel 1: " + str(min(location.values())))
 
 def solve2():
+    seeds = [int(x) for x in input[0].split(': ')[1].split()]
+    location = [(int(seeds[x]),int(seeds[x])+int(seeds[x+1]-1)) for x in range(0,len(seeds),2)]
+    print(location)
+    for i in range(len(maporder)):
+        newlocations = []
+        for s in location:
+            newlocations.append(transition(s, maps[maporder[i]]))
+        location = newlocations
+        print('After ' + maporder[i] + ": ")
+        print(location)
     print("Deel 2: No")
+
+
+seeds = [int(x) for x in input[0].split(': ')[1].split()]
+maps = {}
+get_maps(input, maps)
 
 start = datetime.datetime.now()
 solve1()
