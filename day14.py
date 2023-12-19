@@ -17,7 +17,7 @@ input = [
 ]
 
 # input complete lines
-#input = open('input_'+os.path.basename(__file__).split(".")[0]+'.txt').read().splitlines()
+input = open('input_'+os.path.basename(__file__).split(".")[0]+'.txt').read().splitlines()
 
 
 def solve1():
@@ -29,10 +29,14 @@ def solve1():
         for above in reversed(range(r[0])):
             if ((above,r[1]) in shifted_rocks):
                 shifted_rocks[above+1,r[1]] = rocks[r]
-                print('Move ' + str(r) + ' to ' + str((above, r[1])))
+                #print('Move ' + str(r) + ' to ' + str((above+1, r[1])))
                 break
+        else:
+            shifted_rocks[0,r[1]] = rocks[r]
+            #print('Default move ' + str(r) + ' to ' + str((0, r[1])))
 
-    print(sorted(shifted_rocks))
+    print(sum([len(input)-x[0] for x in  sorted(shifted_rocks) if shifted_rocks[x] == 'O']))
+
     print("Deel 1: " + str(result))
 
 def solve2():
