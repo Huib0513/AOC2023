@@ -29,13 +29,28 @@ input = [
 def flow_work(wfkey, item):
     result = 'R'
     for step in workflows[wfkey]:
+        print(step, item)
         if ((index := step.find(':')) != -1):
             check = step[:index]
             nextstep = step[index+1:]
-            print(check, nextstep)
+            x = item['x']
+            m = item['m']
+            a = item['a']
+            s = item['s']
+            #print(check, nextstep, x, m, a, s)
+            if eval(check):
+                #print('Yes! ' + check)
+                if (nextstep in ('A', 'R')):
+                    result = nextstep
+                else:
+                    result = flow_work(nextstep, item)
+                break
+        elif step in ('A', 'R'):
+            result = step
+            break
         else:
-            nextstep = step
-            print(step)
+            result = (flow_work(step, item))
+            break
         
     return(result)
 
@@ -46,6 +61,8 @@ def solve1():
         if flow_work('in', i) == 'A':
             results.append(i)
 
+    print(results)
+    result += sum([sum(d.values()) for d in results])
     print("Deel 1: " + str(result))
 
 def solve2():
@@ -58,7 +75,7 @@ for l in input:
         readitems = True
         continue
     if readitems:
-        items.append({kv.split('=')[0]:kv.split('=')[1] for kv in l[1:len(l)-1].split(',')})
+        items.append({kv.split('=')[0]:int(kv.split('=')[1]) for kv in l[1:len(l)-1].split(',')})
     else:
         workflows[l.split('{')[0]] = [s for s in l.split('{')[1][:len(l.split('{')[1])-1].split(',')]
 
