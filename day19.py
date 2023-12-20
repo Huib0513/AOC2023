@@ -24,7 +24,7 @@ input = [
 ]
 
 # input complete lines
-#input = open('input_'+os.path.basename(__file__).split(".")[0]+'.txt').read().splitlines()
+input = open('input_'+os.path.basename(__file__).split(".")[0]+'.txt').read().splitlines()
 
 def flow_work(wfkey, item):
     result = 'R'
